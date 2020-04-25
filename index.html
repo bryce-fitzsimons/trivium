@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <title>Trivium</title>
+
+    <link href='./less/style.css' rel='stylesheet' type='text/css'/>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+</head>
+
+<div class="logo_container">
+    <img class="logo <?= (!$_GET['room'] && !$_GET['p']) ? 'large' : '' ?>" src="image/trivium.png" />
+</div>
+
+
+<div class="screen join">
+    <a class="manage_link" href="?p=manage"><i class="icon-desktop"></i> Host a session</a>
+
+    <h2 style="margin-top: 50px;">Enter Join Code</h2>
+    <form id="joinform">
+        <div class="input_box">
+            <input type="text" name="room" class="joincode_input" autocomplete="off"
+              onchange="Trivium.UI.joincodeInputChange();" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+        </div>
+    </form>
+
+    <div class="keypad">
+        <div class="keypad_row">
+            <button class="join keypad_button number">1</button>
+            <button class="join keypad_button number">2</button>
+            <button class="join keypad_button number">3</button>
+        </div>
+        <div class="keypad_row">
+            <button class="join keypad_button number">4</button>
+            <button class="join keypad_button number">5</button>
+            <button class="join keypad_button number">6</button>
+        </div>
+        <div class="keypad_row">
+            <button class="join keypad_button number">7</button>
+            <button class="join keypad_button number">8</button>
+            <button class="join keypad_button number">9</button>
+        </div>
+        <div class="keypad_row">
+            <button class="join keypad_button del">⌫</button>
+            <button class="join keypad_button number">0</button>
+            <button class="join keypad_button go for_joinform disabled">GO</button>
+        </div>
+    </div>
+</div>
+
+<div class="screen manage">
+    <h2 class="title">Manage a Room</h2>
+        <?php if(!$_GET['room']){ ?>
+            <form id="manageform">
+                <div class="input_box">
+                    <input type="hidden" name="p" value="manage">
+                    <input type="text" name="room" class="joincode_input" autocomplete="off"
+                      onchange="Trivium.UI.joincodeInputChange();" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+                </div>
+            </form>
+            <div class="keypad">
+                <div class="keypad_row">
+                    <button class="join keypad_button number">1</button>
+                    <button class="join keypad_button number">2</button>
+                    <button class="join keypad_button number">3</button>
+                </div>
+                <div class="keypad_row">
+                    <button class="join keypad_button number">4</button>
+                    <button class="join keypad_button number">5</button>
+                    <button class="join keypad_button number">6</button>
+                </div>
+                <div class="keypad_row">
+                    <button class="join keypad_button number">7</button>
+                    <button class="join keypad_button number">8</button>
+                    <button class="join keypad_button number">9</button>
+                </div>
+                <div class="keypad_row">
+                    <button class="join keypad_button del">⌫</button>
+                    <button class="join keypad_button number">0</button>
+                    <button class="join keypad_button go for_manageform disabled">GO</button>
+                </div>
+            </div>
+        <?php } else { ?>
+            <div class="status"></div>
+            <div class="error"></div>
+            <div class="tools">
+                <h3>Playlist controls</h3>
+                <form id="control_playlist" method="post">
+                    <div class="form_group">
+                        <div class="control next" data-type="play"><i class="icon-right-open"></i>Next</div>
+                    </div>
+                    <div class="playlist_status"></div>
+                </form>
+
+                <div>
+                    <a style="font-size: 24px; display: inline-block; margin-bottom: 10px;" target="_blank" href="?room=<?= $_GET['room'] ?>">Present room</a>
+                </div>
+
+                <h3>Playlist settings</h3>
+                <form id="manage_playlist" method="post">
+                    <div class="form_group">
+                        <label for="playlist_name">Presentation Name</label>
+                        <input id="playlist_name" name="playlist_name" type="text">
+                    </div>
+                    <div class="form_group">
+                        <label for="playlist_type">Presentation type</label>
+                        <select id="playlist_type" name="playlist_type">
+                            <option value="quiz">Quiz</option>
+                        </select>
+                    </div>
+                    <div class="form_group">
+                        <label for="playlist_teams">Team Names<br><small>Each team on a new line</small></label>
+                        <textarea class="small" id="playlist_teams" name="teams"></textarea>
+                    </div>
+                    <div class="form_group">
+                        <label>Playlist content</label>
+                        <textarea name="content" id="contentTextArea"></textarea>
+                        <div class="import">Import</div>
+                    </div>
+                    <div class="form_group center">
+                        <button>Update</button>
+                        <div class="save_status"></div>
+                    </div>
+                </form>
+            </div>
+        <?php } ?>
+</div>
+
+<div class="screen lobby">
+    <form id="lobbyform" method="post">
+        <div class="form_group">
+            <h2>Your name</h2>
+            <div class="input_box">
+                <input id="input_name" name="name" type="text" maxlength="30" onclick="this.setSelectionRange(0, this.value.length);">
+            </div>
+        </div>
+        <div class="form_group team_form hidden">
+            <h2>Select a team</h2>
+            <div id="team_list"></div>
+        </div>
+
+        <div style="margin-top: 50px;">
+            <button class="submit_lobby">Let's go!</button>
+        </div>
+    </form>
+</div>
+
+<div class="screen room">
+    <div class="content"></div>
+    <div class="controls hidden">
+        <div class="control next" data-type="play"><i class="icon-right-open"></i>Next</div>
+    </div>
+    <div class="roomstatus hidden">
+        <div class="connections"></div>
+    </div>
+    <div class="playerstatus">
+        <div class="connection"></div>
+    </div>
+</div>
+
+<script>
+  window.Trivium = {};
+
+  require.config({
+    baseUrl: "./js/",
+    paths: {
+      "jquery": "https://code.jquery.com/jquery-2.2.4.min.js"
+    }
+  });
+  require(['trivium'],function(Trivium) {
+    window.Trivium = Trivium;
+    Trivium.serverName = <?=json_encode($_SERVER['HTTP_HOST'])?>;
+    Trivium.session = <?= json_encode(  isset($_GET['id']) ? $_GET['id'] : session_id()  ) ?>;
+    Trivium.init();
+  });
+
+</script>
+</html>
